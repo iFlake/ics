@@ -1,0 +1,52 @@
+CLNS
+You may use and redistribute this license, however, changing it is not allowed.
+
+This software comes with NO WARRANTIES, read section 2.
+
+PREAMBLE:
+      This is a copyleft license--
+      While most software licenses are designed to take away your freedom, this license, on the contrary, will preserve your freedom, even when redistributed.
+      To preserve its and your freedom, any user or contributor to this software must retain the freedoms of this license.
+      The freedoms provided by this license are:
+            Every user is permitted to use or modify this software in any way
+            Every user is permitted to override any technical limitations, including overriding activation features
+            Every user is permitted to decompile or disassemble this software
+            Every contributor is permitted to commercialize this software
+            Every contributor is permitted to apply technical limitations to this software
+      Please read this agreement carefully
+
+TERMS AND CONDITIONS:
+1>    Definitions:
+       1>   "Technical limitation" means preventing an action without legal intervention.
+       2>   "User" means any person using the front-end.
+       3>   "Contributor" means any person using the source code or developing directly on the binaries.
+       4>   "You" means any user or contributor.
+       5>   "Deriative" means any work based on this software.
+       6>   "This software" means any work distributed under this license.
+       6>   "You" means the licensee of this software.
+       7>   "Including" implies 'but not limited to'.
+       8>   All definitions are case-insensitive. 
+       9>   All definitions are plurality-insensitive.
+2>    No liablity:
+       1>   This software is provided without any warranties, implied or otherwise.
+       2>   The authors of this software are not liable for any losses or lost profits that occur by the use of this product, directly or otherwise.
+       3>   You agree to indemnify the authors of this software free from any liabilities you cause.
+3>    Application:
+       1>   This license applies to any user or contributor of this software.
+       2>   This license grants you explicit permission to use, modify and/or redistribute this software.
+       2>   This license may be revoked by removing all copies and traces of the software.
+4>    Scope:
+       1>   This license applies to the source code, its binaries and any deriatives.
+       2>   Additional license terms may apply.
+       3>   Additional license terms may not conflict with this license.
+       4>   This license will not apply and you will not be allowed to use this software if any law forces you to override it in any way.
+5>    Freedoms
+       1>   You are permitted to modify this software, by source if available, binary or otherwise.
+       2>   You are permitted to override any technical limitations in this software, including activation/commercialization features.
+       3>   You are permitted to commercialize this software.
+       4>   You are permitted to apply technical limitations to this software and they will not carry any legal protection.
+6>    Human rights
+       1>   This software may not be used to or to support human trafficking.
+       2>   This software may not be used to discriminate or to support discrimination on the basis of age, sex, racial origin, nationality, religion, sexuality or relationship.
+7>    Legal measures
+       1>   You are not permitted to use any legal measures, including patents or trademarks, to override this license.
