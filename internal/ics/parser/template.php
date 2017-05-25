@@ -51,6 +51,67 @@ class Template
     }
 }
 
+class ExpressionLexer
+{
+    public $expression;
+    public $output;
+    public $error_handler;
+
+    protected $position;
+
+    protected $expression_length;
+
+    public function Parse()
+    {
+        $this->position    = 0;
+        $this->output      = [];
+
+        $this->expression_length    = strlen($expression);
+
+        while ($this->position < $this->expression_length)
+        {
+            if ($this->IsList())
+        }
+    }
+
+    protected function IsList($list)
+    {
+        foreach ($list as $token)
+        {
+            if ($this->Is($token) === true) return $token;
+        }
+
+        return false;
+    }
+
+    protected function Is($token)
+    {
+        if ($this->Read(strlen($token_length)) === $token) return true;
+        else return false;
+    }
+
+    protected function Read($length)
+    {
+        return substr($this->expression, $this->position, $length);
+    }
+
+    protected function Pass($length)
+    {
+        $output = $this->Read($length);
+        $this->position += $length;
+
+        if ($this->Overflow()) $this->error_handler("Position overflow");
+
+        return $output;
+    }
+
+    function Overflow()
+    {
+        if ($this->position > $this->expression_length) return true;
+        else return false;
+    }
+}
+
 class ExpressionCompiler
 {
     public $expression;
