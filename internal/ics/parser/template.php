@@ -61,7 +61,7 @@ class ExpressionLexer
 
     protected $expression_length;
 
-    public function Parse()
+    public function Lex()
     {
         $this->position    = 0;
         $this->output      = [];
@@ -70,7 +70,267 @@ class ExpressionLexer
 
         while ($this->position < $this->expression_length)
         {
-            if ($this->IsList())
+            $nexttoken = $this->IsList(
+            [
+                "(", ")",
+                "+", "-", "*", "/", "%",
+                "&", "|", "^", "<<", ">>", "~",
+                "<", "<=", ">", ">=", "==", "!=",
+                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                    "::", ".",
+                "[", "]", ":", ",",
+                "\"",
+                    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                    "-",
+                " ", "\t", "\r", "\n", "\0"
+            ]);
+
+            switch ($nexttoken)
+            {
+                case "(":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bracket_open;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case ")":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bracket_cloes;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "+":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_add;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "-":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_subtract_literal_negative;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "*":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_multiply;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "/":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_divide;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "%":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_remainder;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "&":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bitwise_and;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "|":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bitwise_inclusiveor;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "^":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bitwise_exclusiveor;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+                case "<<":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bitwise_leftshift;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                   
+                case ">>":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bitwise_rightshift;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "~":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$bitwise_not;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "<":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$conditional_lessthan;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "<=":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$conditional_lessthanequal;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case ">":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$conditional_morethan;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case ">=":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$conditional_lessthanequal;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "==":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$conditional_equal;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                    
+                case "!=":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$conditional_notequal;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "a": case "b": case "c": case "d": case "e": case "f": case "g": case "h": case "i": case "j": case "k": case "l": case "m": case "n": case "o": case "p": case "q": case "r": case "s": case "t": case "u": case "v": case "w": case "x": case "y": case "z":
+                case "A": case "B": case "C": case "D": case "E": case "F": case "G": case "H": case "I": case "J": case "K": case "L": case "M": case "N": case "O": case "P": case "Q": case "R": case "S": case "T": case "U": case "V": case "W": case "X": case "Y": case "Z":
+                
+                    $this->LexIdentifier();
+
+                    break;
+                
+                case "::":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$identifier_namespace;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case ".":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$identifier_class_literal_floatingpoint;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "[":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$list_open;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "]":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$list_close;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case ":":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$list_pair;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case ",":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$list_delimeter;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "\"":
+
+                    $this->LexLiteralString();
+
+                    break;
+                
+                case "0": case "1": case "2": case "3": case "4": case "5": case "6": case "7": case "8": case "9":
+
+                    $this->LexLiteralInteger();
+
+                    break;
+            }
         }
     }
 
@@ -112,281 +372,49 @@ class ExpressionLexer
     }
 }
 
-class ExpressionCompiler
+class LexToken
 {
-    public $expression;
-    public $error_handler;
-    public $output;
-
-    protected $position;
-    protected $stack;
-
-    protected $expression_length;
-
-    public function Parse()
-    {
-        $this->position             = 0;
-        $this->builder              = "";
-        $this->stack                = [];
-
-        $this->expression_length    = strlen($expression);
-
-        while ($this->position < $this->expression_length)
-        {
-            switch ($this->Stack()->stage)
-            {
-                case ExpressionStage::unknown:
-                    $entity = $this->IsMultiple([ExpectEntity::inverse, ExpectEntity::arithmetic_bitwise_not, ExpectEntity::reference_variable, ExpectEntity::reference_namespace, ExpectEntity::token]);
-                    switch ($entity)
-                    {
-                        case ExpectEntity::inverse:
-                            $expression_parser = new ExpressionCompiler;
-
-                            $expression_parser->expression = $this->ReadAll();
-
-                            $expression_parser->Parse();
-                            
-                            $this->output   .= "!{$expression_parser->output}";
-
-                            break;
-                        case ExpectEntity::arithmetic_bitwise_not:
-                            $expression_parser = new Expression;
-
-                            $expression_parser->expression = $this->ReadAll();
-
-                            $expression_parser->Parse();
-
-                            $this->output   .= "^{$expression_parser->output}";
-
-                            break;
-                        case ExpectEntity::reference_variable:
-                            $this->output   .= "\$";
-
-                            $this->Stack()->stage = ExpressionStage::reference;
-                            break;
-                        case ExpectEntity::reference_namespace:
-                            $this->output   .= "\\";
-                            
-                            $this->Stack()->stage = ExpressionStage::reference;
-                            break;
-                        case ExpectEntity::token:
-                            --$this->position;
-
-                            $this->Stack()->stage = ExpressionStage::reference;
-                            break;
-                        default:
-                            --$this->position;
-
-                            $this->error_handler("Unexpected token " . $this->Char());
-                            break;
-                    }
-                    break;
-                case ExpressionStage::reference:
-                    $entity = $this->IsMultiple([ExpectEntity::reference_variable, ExpectEntity::reference_namespace, ExpectEntity::reference_member, ExpectEntity::reference_member_static, ExpectEntity::token]);
-                    
-                    switch ($entity)
-                    {
-                        case ExpectEntity::reference_variable:
-                            $this->output   .= "\$";
-
-                            break;
-                        case ExpectEntity::reference_namespace:
-                            $this->output   .= "\\";
-
-                            break;
-                        case ExpectEntity::reference_member:
-                            $this->output   .= "->";
-
-                            break;
-                        case ExpectEntity::reference_member_static:
-                            $this->output   .= "::";
-
-                            break;
-                        
-                        case ExpectEntity::token:
-                            $this->output    .= $this->Char();
-                            
-                            break;
-
-                        default:
-                            --$this->position;
-                            $this->Stack()->stage = ExpressionStage::unknown;
-
-                            break;
-                    }
-                    break;
-            }
-
-            ++$this->position;
-        }
-    }
-
-    
-    protected function Stack()
-    {
-        return $this->stack[count($this->stack) - 1];
-    }
-
-    protected function Expect($entity)
-    {
-        $output    = "";
-
-        while (!$this->Is($entity))
-        {
-            $output   .= substr($this->expression, $this->position, 1);
-
-            $this->Pass();
-        }
-
-        return $output;
-    }
-
-    protected function ExpectMultiple($tokens)
-    {
-        $expects    = new Expects;
-
-        while (($expects->token = $this->IsMultiple($tokens)) === false)
-        {
-            $expects->output   .= $this->Pass();
-        }
-
-        return $expects;
-    }
-
-    protected function Until($entity)
-    {
-        $expects    = new Expects;
-
-        while (($expects->token = $this->IsMultiple($tokens)) !== false && $this->position < $this->expression_length)
-        {
-            $expects->output   .= $this->Pass();
-        }
-
-        return $expects;
-    }
-
-    protected function Is($entity, $increment = true)
-    {
-        foreach ($entity as $token)
-        {
-            if ($this->Char(strlen($token)) == $token)
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    protected function IsMultiple($tokens, $increment = true)
-    {
-        foreach ($tokens as $token)
-        {
-            if ($this->Is($token, $increment)) return $token;
-        }
-
-        return false;
-    }
-
-    protected function Char($length = 1)
-    {
-        return substr($this->expression, $this->position, $length);
-    }
-
-    protected function Pass($length = 1)
-    {
-        $char    = $this->Char($length);
-
-        $this->position += $length;
-
-        return $char;
-    }
-
-    public function ReadAll()
-    {
-        $fragment = substr($this->expression, $this->position);
-
-        $this->position = $this->expression_length - 1;
-
-        return $fragment;
-    }
+    public static $identifier    = null;
+    public static $value         = null;
 }
 
-class ExpressionStack
+class LexTokenIdentifier
 {
-    public $stage      = ExpressionStage::unknown;
-    public $builder    = "";
-}
+    public static $bracket_open                              = 0;
+    public static $bracket_close                             = 1;
 
-class ExpressionStage
-{
-    public static $unknown                            = 0;
-    
-    public static $arithmetic_add                     = 1;
-    public static $arithmetic_subtract                = 2;
-    public static $arithmetic_multiply                = 3;
-    public static $arithmetic_divide                  = 4;
-    public static $arithmetic_exponent                = 5;
-    public static $arithmetic_root                    = 6;
-    public static $arithmetic_remainder               = 7;
-    
-    public static $comparator_less                    = 8;
-    public static $comparator_more                    = 9;
-    public static $comparator_lessthanequal           = 10;
-    public static $comparator_morethanequal           = 11;
-    public static $comparator_equal                   = 12;
-    public static $comparator_notequal                = 13;
+    public static $arithmetic_add                            = 2;
+    public static $arithmetic_subtract_literal_negative      = 3;
+    public static $arithmetic_multiply                       = 4;
+    public static $arithmetic_divide                         = 5;
+    public static $arithmetic_remainder                      = 6;
 
-    public static $arithmetic_bitwise_and             = 14;
-    public static $arithmetic_bitwise_inclusive_or    = 15;
-    public static $arithmetic_bitwise_exclusive_or    = 16;
-    public static $arithmetic_bitwise_leftshift       = 17;
-    public static $arithmetic_bitwise_rightshift      = 18;
-    public static $arithmetic_bitwise_not             = 19;
-    
-    public static $reference                          = 20;
-    public static $call                               = 21;
-}
+    public static $bitwise_and                               = 7;
+    public static $bitwise_inclusiveor                       = 8;
+    public static $bitwise_exclusiveor                       = 9;
+    public static $bitwise_leftshift                         = 10;
+    public static $bitwise_rightshift                        = 11;
+    public static $bitwise_not                               = 12;
 
-class ExpectEntity
-{
-    public static $token                              = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-    public static $integer                            = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    public static $conditional_lessthan                      = 13;
+    public static $conditional_lessthanequal                 = 14;
+    public static $conditional_morethan                      = 15;
+    public static $conditional_morethanequal                 = 16;
+    public static $conditional_equal                         = 17;
+    public static $conditional_notequal                      = 18;
 
-    public static $float                              = ["."];
+    public static $identifier                                = 19;
+    public static $identifier_namespace                      = 20;
+    public static $identifier_class_literal_floatingpoint    = 21;
 
-    public static $inverse                            = ["!"];
+    public static $list_open                                 = 22;
+    public static $list_close                                = 23;
+    public static $list_pair                                 = 24;
+    public static $list_delimeter                            = 25;
 
-    public static $arithmetic_add                     = ["+"];
-    public static $arithmetic_subtract                = ["-"];
-    public static $arithmetic_multiply                = ["*"];
-    public static $arithmetic_divide                  = ["/"];
-    public static $arithmetic_exponent                = ["^^"];
-    public static $arithmetic_root                    = ["!^^"];
-    public static $arithmetic_remainder               = ["%"];
-    
-    public static $comparator_less                    = ["<"];
-    public static $comparator_more                    = [">"];
-    public static $comparator_lessthanequal           = ["<="];
-    public static $comparator_morethanequal           = [">="];
-    public static $comparator_equal                   = ["=="];
-    public static $comparator_notequal                = ["!="];
+    public static $literal_string                            = 26;
+    public static $literal_integer                           = 27;
+    public static $literal_negative                          = 28;
 
-    public static $arithmetic_bitwise_and             = ["&"];
-    public static $arithmetic_bitwise_inclusive_or    = ["|"];
-    public static $arithmetic_bitwise_exclusive_or    = ["^"];
-    public static $arithmetic_bitwise_leftshift       = ["<<"];
-    public static $arithmetic_bitwise_rightshift      = [">>"];
-    public static $arithmetic_bitwise_not             = ["~"];
-    
-    public static $reference_variable                 = ["$"];
-    public static $reference_namespace                = ["::"];
-    public static $reference_member                   = ["."];
-    public static $reference_member_static            = ["@"];
-
-    public static $call_start                         = ["("];
-    public static $call_end                           = [")"];
-    public static $call_parameters_delimeter          = [","];
-
-    public static $whitespace                         = [" ", "\t", "\r", "\n", "\0"];
+    public static $whitespace                                = 29;
 }
