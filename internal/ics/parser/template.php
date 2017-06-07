@@ -105,6 +105,8 @@ class ExpressionLexer
 
                     break;
                 
+
+                
                 case "+":
                     $token                = new LexToken;
                     $token->identifier    = LexTokenIdentifier::$arithmetic_add;
@@ -150,6 +152,8 @@ class ExpressionLexer
 
                     break;
                 
+
+
                 case "&":
                     $token                = new LexToken;
                     $token->identifier    = LexTokenIdentifier::$bitwise_and;
@@ -203,6 +207,8 @@ class ExpressionLexer
                     $this->output[]       = $token;
 
                     break;
+
+
                 
                 case "<":
                     $token                = new LexToken;
@@ -257,6 +263,8 @@ class ExpressionLexer
                     $this->output[]       = $token;
 
                     break;
+
+
                 
                 case "a": case "b": case "c": case "d": case "e": case "f": case "g": case "h": case "i": case "j": case "k": case "l": case "m": case "n": case "o": case "p": case "q": case "r": case "s": case "t": case "u": case "v": case "w": case "x": case "y": case "z":
                 case "A": case "B": case "C": case "D": case "E": case "F": case "G": case "H": case "I": case "J": case "K": case "L": case "M": case "N": case "O": case "P": case "Q": case "R": case "S": case "T": case "U": case "V": case "W": case "X": case "Y": case "Z":
@@ -283,6 +291,26 @@ class ExpressionLexer
 
                     break;
                 
+                case "$":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$identifier_variable;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+                case "@":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$identifier_static;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+
+
                 case "[":
                     $token                = new LexToken;
                     $token->identifier    = LexTokenIdentifier::$list_open;
@@ -319,6 +347,8 @@ class ExpressionLexer
 
                     break;
                 
+
+
                 case "\"":
 
                     $this->LexLiteralString();
@@ -330,8 +360,51 @@ class ExpressionLexer
                     $this->LexLiteralInteger();
 
                     break;
+
+
+                
+                case "-":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_subtract_literal_negative;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case " ": case "\t": case "\r": case "\n": case "\0":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::$arithmetic_subtract_literal_negative;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+
+                
+                default:
+                    $this->position = $this->expression_length - 1;
+                    break;
             }
+
+            ++$this->position;
         }
+    }
+
+    protected function LexIdentifier()
+    {
+        
+    }
+
+    protected function LexLiteralString()
+    {
+
+    }
+
+    protected function LexLiteralInteger()
+    {
+        
     }
 
     protected function IsList($list)
@@ -365,7 +438,7 @@ class ExpressionLexer
         return $output;
     }
 
-    function Overflow()
+    protected function Overflow()
     {
         if ($this->position > $this->expression_length) return true;
         else return false;
@@ -406,15 +479,17 @@ class LexTokenIdentifier
     public static $identifier                                = 19;
     public static $identifier_namespace                      = 20;
     public static $identifier_class_literal_floatingpoint    = 21;
+    public static $identifier_variable                       = 22;
+    public static $identifier_static                         = 23;
 
-    public static $list_open                                 = 22;
-    public static $list_close                                = 23;
-    public static $list_pair                                 = 24;
-    public static $list_delimeter                            = 25;
+    public static $list_open                                 = 24;
+    public static $list_close                                = 25;
+    public static $list_pair                                 = 26;
+    public static $list_delimeter                            = 27;
 
-    public static $literal_string                            = 26;
-    public static $literal_integer                           = 27;
-    public static $literal_negative                          = 28;
+    public static $literal_string                            = 28;
+    public static $literal_integer                           = 29;
+    public static $literal_negative                          = 30;
 
-    public static $whitespace                                = 29;
+    public static $whitespace                                = 31;
 }
