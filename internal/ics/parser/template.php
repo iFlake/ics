@@ -394,12 +394,28 @@ class ExpressionLexer
 
     protected function LexIdentifier()
     {
-        
+        $nextcharacter    = Read(1);
+        $builder          = $nextcharacter;
+
+        while ($nextcharacter = $this->IsList(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]))
+        {
+            $this->builder += $nextcharacter;
+
+            ++$this->position;
+        }
+
+        $token                = new LexToken;
+        $token->identifier    = LexTokenIdentifier::$identifier;
+        $token->value         = $builder;
+
+        $this->output[]       = $token;
     }
 
     protected function LexLiteralString()
     {
+        ++$this->position;
 
+        
     }
 
     protected function LexLiteralInteger()
