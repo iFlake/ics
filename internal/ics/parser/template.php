@@ -98,7 +98,7 @@ class ExpressionLexer
                 
                 case ")":
                     $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::$bracket_cloes;
+                    $token->identifier    = LexTokenIdentifier::$bracket_close;
                     $token->value         = $nexttoken;
 
                     $this->output[]       = $token;
@@ -415,7 +415,7 @@ class ExpressionLexer
     {
         ++$this->position;
 
-        
+
     }
 
     protected function LexLiteralInteger()
