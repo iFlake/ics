@@ -95,7 +95,7 @@ class ExpressionTranslator
 
     protected function Shift()
     {
-        
+
     }
 
     protected function Reduce()
@@ -431,11 +431,8 @@ class ExpressionLexer
 
                 
                 case " ": case "\t": case "\r": case "\n": case "\0":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::whitespace;
-                    $token->value         = $nexttoken;
 
-                    $this->output[]       = $token;
+                    $this->LexWhitespace();
 
                     break;
 
@@ -522,6 +519,26 @@ class ExpressionLexer
 
         $token                = new LexToken;
         $token->identifier    = intval(LexTokenIdentifier::literal_integer);
+        $token->value         = $builder;
+
+        $this->output[]       = $token;
+        --$this->position;
+    }
+
+    protected function LexWhitespace()
+    {
+        $nextcharacter    = $this->Pass(1);
+        $builder          = $nextcharacter;
+
+        while ($nextcharacter = $this->IsList([" ", "\t", "\r", "\n", "\0"]))
+        {
+            $builder .= $nextcharacter;
+
+            ++$this->position;
+        }
+
+        $token                = new LexToken;
+        $token->identifier    = intval(LexTokenIdentifier::whitespace);
         $token->value         = $builder;
 
         $this->output[]       = $token;
