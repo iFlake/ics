@@ -370,8 +370,8 @@ class Location
 
 class TagType
 {
-    const start    = 0;
-    const end      = 1;
+    public const start    = 0;
+    public const end      = 1;
 }
 
 class Element
