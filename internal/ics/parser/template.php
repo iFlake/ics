@@ -63,6 +63,8 @@ class ExpressionTranslator
     protected $lexer;
     protected $lexed_expression_length;
 
+    protected $matches;
+
 
     public function __call($name, $parameters)
     {
@@ -75,32 +77,136 @@ class ExpressionTranslator
 
     public function Translate()
     {
-        $this->lexer                   = new ExpressionLexer;
+        $this->lexer                      = new ExpressionLexer;
 
-        $this->lexer->expression       = $this->expression;
-        $this->lexer->error_handler    = $this->error_handler;
+        $this->lexer->expression          = $this->expression;
+        $this->lexer->error_handler       = $this->error_handler;
 
         $this->lexer->Lex();
 
+        $this->lexed_expression_length    = count($this->lexer->output);
 
-        $this->lexed_expression_length = count($this->lexer->output);
+
+        $parentheses    = 0;
+        $lists          = 1;
+
 
         while ($this->position < $this->lexed_expression_length)
         {
-            if ($this->Shift() == false) $this->Reduce();
+            switch ($this->lexer->output[$this->position])
+            {
+                case LexTokenIdentifier::bracket_open:
+                    ++$parentheses;
+                    $this->output .= "(";
+
+                    break;
+                
+                case LexTokenIdentifier::bracket_close:
+                    --$parentheses;
+
+                    if ($parentheses < 0) return $this->error_handler("Mismatched parentheses");
+
+                    $this->output .= ")";
+
+                    break;
+
+
+                
+                case LexTokenIdentifier::arithmetic_add:
+                    $this->output .= "+";
+
+                    break;
+                
+                case LexTokenIdentifier::arithmetic_subtract_literal_negative:
+                    $this->output .= "-";
+                    
+                    break;
+                
+                case LexTokenIdentifier::arithmetic_multiply:
+                    $this->output .= "*";
+
+                    break;
+                
+                case LexTokenIdentifier::arithmetic_divide:
+                    $this->output .= "/";
+
+                    break;
+                
+                case LexTokenIdentifier::arithmetic_remainder:
+                    $this->output .= "%";
+
+                    break;
+
+
+                
+                case LexTokenIdentifier::conditional_lessthan:
+                    $this->output .= "<";
+
+                    break;
+                
+                case LexTokenIdentifier::conditional_lessthanequal:
+                    $this->output .= "<=";
+
+                    break;
+                
+                case LexTokenIdentifier::conditional_morethan:
+                    $this->output .= ">";
+
+                    break;
+                
+                case LexTokenIdentifier::conditional_morethanequal:
+                    $this->output .= ">=";
+
+                    break;
+                
+                case LexTokenIdentifier::conditional_and:
+                    $this->output .= "&&";
+
+                    break;
+                
+                case LexTokenIdentifier::conditional_or:
+                    $this->output .= "||";
+
+                    break;
+
+
+                
+                case LexTokenIdentifier::bitwise_and:
+                    $this->output .= "&";
+
+                    break;
+                
+                case LexTokenIdentifier::bitwise_inclusiveor:
+                    $this->output .= "|";
+
+                    break;
+                
+                case LexTokenIdentifier::bitwise_exclusiveor:
+                    $this->output .= "^";
+
+                    break;
+                
+                case LexTokenIdentifier::bitwise_leftshift:
+                    $this->output .= "<<";
+
+                    break;
+                
+                case LexTokenIdentifier::bitwise_rightshift:
+                    $this->output .= ">>";
+
+                    break;
+                
+                case LexTokenIdentifier::bitwise_not:
+                    $this->output .= "~";
+
+                    break;
+                
+            }
+            
+            ++$this->position;
         }
 
         if (count($this->stack) != 0) return $this->error_handler("Reached end of expression, no reduction match found");
-    }
-
-    protected function Shift()
-    {
-
-    }
-
-    protected function Reduce()
-    {
-
     }
 }
 
@@ -139,8 +245,8 @@ class ExpressionLexer
             [
                 "(", ")",
                 "+", "-", "*", "/", "%",
+                "<=", "<", ">=", ">", "==", "!=", "&&", "||",
                 "&", "|", "^", "<<", ">>", "~",
-                "<", "<=", ">", ">=", "==", "!=",
                 "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
                     "::", ".",
                 "[", "]", ":", ",",
@@ -221,62 +327,6 @@ class ExpressionLexer
                 
 
 
-                case "&":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::bitwise_and;
-                    $token->value         = $nexttoken;
-
-                    $this->output[]       = $token;
-
-                    break;
-                
-                case "|":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::bitwise_inclusiveor;
-                    $token->value         = $nexttoken;
-
-                    $this->output[]       = $token;
-
-                    break;
-                
-                case "^":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::bitwise_exclusiveor;
-                    $token->value         = $nexttoken;
-
-                    $this->output[]       = $token;
-
-                    break;
-
-                case "<<":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::bitwise_leftshift;
-                    $token->value         = $nexttoken;
-
-                    $this->output[]       = $token;
-
-                    break;
-                   
-                case ">>":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::bitwise_rightshift;
-                    $token->value         = $nexttoken;
-
-                    $this->output[]       = $token;
-
-                    break;
-                
-                case "~":
-                    $token                = new LexToken;
-                    $token->identifier    = LexTokenIdentifier::bitwise_not;
-                    $token->value         = $nexttoken;
-
-                    $this->output[]       = $token;
-
-                    break;
-
-
-                
                 case "<":
                     $token                = new LexToken;
                     $token->identifier    = LexTokenIdentifier::conditional_lessthan;
@@ -325,6 +375,80 @@ class ExpressionLexer
                 case "!=":
                     $token                = new LexToken;
                     $token->identifier    = LexTokenIdentifier::conditional_notequal;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+                case "&&":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::conditional_and;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+                case "||":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::conditional_or;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+
+
+                case "&":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::bitwise_and;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "|":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::bitwise_inclusiveor;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "^":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::bitwise_exclusiveor;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+
+                case "<<":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::bitwise_leftshift;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                   
+                case ">>":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::bitwise_rightshift;
+                    $token->value         = $nexttoken;
+
+                    $this->output[]       = $token;
+
+                    break;
+                
+                case "~":
+                    $token                = new LexToken;
+                    $token->identifier    = LexTokenIdentifier::bitwise_not;
                     $token->value         = $nexttoken;
 
                     $this->output[]       = $token;
@@ -600,33 +724,35 @@ class LexTokenIdentifier
     public const arithmetic_divide                         = 5;
     public const arithmetic_remainder                      = 6;
 
-    public const bitwise_and                               = 7;
-    public const bitwise_inclusiveor                       = 8;
-    public const bitwise_exclusiveor                       = 9;
-    public const bitwise_leftshift                         = 10;
-    public const bitwise_rightshift                        = 11;
-    public const bitwise_not                               = 12;
+    public const conditional_lessthan                      = 7;
+    public const conditional_lessthanequal                 = 8;
+    public const conditional_morethan                      = 9;
+    public const conditional_morethanequal                 = 10;
+    public const conditional_equal                         = 11;
+    public const conditional_notequal                      = 12;
+    public const conditional_and                           = 13;
+    public const conditional_or                            = 14;
 
-    public const conditional_lessthan                      = 13;
-    public const conditional_lessthanequal                 = 14;
-    public const conditional_morethan                      = 15;
-    public const conditional_morethanequal                 = 16;
-    public const conditional_equal                         = 17;
-    public const conditional_notequal                      = 18;
+    public const bitwise_and                               = 15;
+    public const bitwise_inclusiveor                       = 16;
+    public const bitwise_exclusiveor                       = 17;
+    public const bitwise_leftshift                         = 18;
+    public const bitwise_rightshift                        = 19;
+    public const bitwise_not                               = 20;
 
-    public const identifier                                = 19;
-    public const identifier_namespace                      = 20;
-    public const identifier_class_literal_floatingpoint    = 21;
-    public const identifier_variable                       = 22;
-    public const identifier_static                         = 23;
+    public const identifier                                = 21;
+    public const identifier_namespace                      = 22;
+    public const identifier_class_literal_floatingpoint    = 23;
+    public const identifier_variable                       = 24;
+    public const identifier_static                         = 25;
 
-    public const list_open                                 = 24;
-    public const list_close                                = 25;
-    public const list_pair                                 = 26;
-    public const list_delimeter                            = 27;
+    public const list_open                                 = 26;
+    public const list_close                                = 27;
+    public const list_pair                                 = 28;
+    public const list_delimeter                            = 29;
 
-    public const literal_string                            = 28;
-    public const literal_integer                           = 29;
+    public const literal_string                            = 30;
+    public const literal_integer                           = 31;
 
-    public const whitespace                                = 30;
+    public const whitespace                                = 32;
 }
