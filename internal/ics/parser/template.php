@@ -201,6 +201,73 @@ class ExpressionTranslator
 
                     break;
                 
+
+
+                case LexTokenIdentifier::identifier:
+                    $this->output .= $this->lexer->output[$this->position]->value;
+
+                    break;
+                
+                case LexTokenIdentifier::identifier_namespace:
+                    $this->output .= "\\";
+
+                    break;
+                
+                case LexTokenIdentifier::identifier_class_literal_floatingpoint:
+                    $this->output .= ".";
+                    
+                    break;
+                
+                case LexTokenIdentifier::identifier_variable:
+                    $this->output .= "\$";
+
+                    break;
+                
+                case LexTokenIdentifier::identifier_static:
+                    $this->output .= "::";
+                    
+                    break;
+
+
+                    
+                case LexTokenIdentifier::list_open:
+                    $this->output .= "[";
+
+                    break;
+                
+                case LexTokenIdentifier::list_close:
+                    $this->output .= "]";
+
+                    break;
+                
+                case LexTokenIdentifier::list_pair:
+                    $this->output .= "=>";
+
+                    break;
+                
+                case LexTokenIdentifier::list_delimeter:
+                    $this->output .= ",";
+                    
+                    break;
+
+
+
+                case LexTokenIdentifier::literal_string:
+                    $this->output .= "\"" . addcslashes($this->lexer->output[$this->position]->value, "\\") . "\"";
+
+                    break;
+                
+                case LexTokenIdentifier::literal_integer:
+                    $this->output .= (int)$this->lexer->output[$this->position]->value;
+
+                    break;
+                
+
+
+                case LexTokenIdentifier::whitespace:
+                    $this->output .= "\n";
+
+                    break;
             }
             
             ++$this->position;
