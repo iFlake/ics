@@ -91,9 +91,12 @@ class ExpressionTranslator
         $lists          = 1;
 
 
+        $this->position = 0;
+
+
         while ($this->position < $this->lexed_expression_length)
-        {
-            switch ($this->lexer->output[$this->position])
+        {;
+            switch ($this->lexer->output[$this->position]->identifier)
             {
                 case LexTokenIdentifier::bracket_open:
                     ++$parentheses;
@@ -640,12 +643,12 @@ class ExpressionLexer
 
     protected function LexIdentifier()
     {
-        $nextcharacter    = Read(1);
-        $builder          = $nextcharacter;
+        $nextcharacter    = $this->Read(1);
+        $builder          = "";
 
         while ($nextcharacter = $this->IsList(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]))
         {
-            $this->builder += $nextcharacter;
+            $builder .= $nextcharacter;
 
             ++$this->position;
         }
