@@ -29,6 +29,6 @@ class Cache
         
         $value = apc_fetch(\itais\ics\cache\Cache::prefix . $this->name . "=" . $name, $success);
 
-        return $success ? unserialize($value) : null;
+        return $success == true ? unserialize($value) : null;
     }
 }

@@ -83,14 +83,20 @@ class Application
 
             if (\itais\ics\config\Cache::autoloader == true)
             {
-                $cache    = new \itais\ics\cache\Cache("file_exists");
-                $file_path = $cache->{$file_path};
+                $cache        = new \itais\ics\cache\Cache("file_exists");
+                $exists       = $cache->{$file_path};
 
-                $exists 
+                if ($exists != null && $exists == true) return include_once $file_path;
             }
 
-            if (file_exists($file_path))
+            if (file_exists($file_path) == true)
             {
+                if (\itais\ics\config\Cache::autoloader == true)
+                {
+                    $cache                  = new \itais\ics\cache\Cache("file_exists");
+                    $cache->{$file_path}    = $true;
+                }
+
                 include_once $file_path;
             }
         });
