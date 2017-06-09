@@ -41,13 +41,114 @@ class Template
         switch ($tag->command)
         {
             case "$":
-                $signal->inline    = true;
-                $signal->output    = $this->ParseExpression($tag->command);
+                $signal->inline               = true;
+
+                $translator                   = new ExpressionTranslator;
+
+                $translator->expression       = $tag->parameters;
+                $translator->error_handler    = $this->parser->SignalError;
+
+                $translator->Translate();
+
+                $signal->output               = "<?php {$translator->output}; ?>";
+
                 break;
+            
+            case "asn":
+                $signal->inline                          = true;
+
+                $sections                                = explode("::::", $tag->parameters, 2);
+
+                $identifier_translator                   = new ExpressionTranslator;
+
+                $identifier_translator->expression       = $sections[0];
+                $identifier_translator->error_handler    = $this->parser->SignalError;
+
+                $identifier_translator->Translate();
+
+                $value_translator                        = new ExpressionTranslator;
+
+                $value_translator->expression            = $sections[1];
+                $value_translator->error_handler         = $this->parser->SignalError;
+
+                $value_translator->Translate();
+
+                $signal->output               = "<?php {$identifier_translator->output} = {$value_translator->output}; ?>";
+
+                break;
+            
+            case "if":
+                $signal->inline               = false;
+
+                $translator                   = new ExpressionTranslator;
+
+                $translator->expression       = $tag->parameters;
+                $translator->error_handler    = $this->parser->SignalError;
+
+                $translator->Translate();
+
+                $signal->output               = "<?php if ({$translator->output}) { ?> {$tag->content} <?php } ?>";
+
+                break;
+            
+            case "else":
+                $signal->inline               = false;
+
+                $signal->output               = "<?php else { ?> {$tag->content} <?php } ?>";
+
+                break;
+
+            case "switch":
+                $signal->inline               = false;
+
+                $translator                   = new ExpressionTranslator;
+
+                $translator->expression       = $tag->parameters;
+                $translator->error_handler    = $this->parser->SignalError;
+
+                $translator->Translate();
+
+                $signal->output               = "<?php switch ({$translator->output}) { {$tag->content} } ?>";
+
+                break;
+
+            case "case":
+                $signal->inline               = false;
+
+                $translator                   = new ExpressionTranslator;
+
+                $translator->expression       = $tag->parameters;
+                $translator->error_handler    = $this->parser->SignalError;
+
+                $translator->Translate();
+
+                $signal->output               = "case {$translator->output}: { ?> {$tag->content} <?php }";
+
+                break;
+
+            case "default":
+                $signal->inline               = false;
+
+                $signal->output               = "default: { ?> {$tag->content} <?php }";
+
+                break;
+
+            case "break":
+                $signal->inline               = true;
+
+                $signal->output               = "<?php break; ?>";
+
+                break;
+
+
+
             default:
                 $this->Parser->SignalError("Unknown command '{$tag->command}'");
+
                 break;
         }
+
+        return $signal;
     }
 }
 
@@ -286,6 +387,8 @@ class ExpressionLexer
     public $output;
     public $error_handler;
 
+    public $dictionary;
+
     protected $position;
 
     protected $expression_length;
@@ -304,27 +407,29 @@ class ExpressionLexer
 
     public function Lex()
     {
-        $this->position    = 0;
+        if ($this->position == null) $this->position    = 0;
         $this->output      = [];
 
         $this->expression_length    = strlen($this->expression);
 
+        if ($this->dictionary == null) $this->dictionary =
+        [
+            "(", ")",
+            "+", "-", "*", "/", "%",
+            "<=", "<", ">=", ">", "==", "!=", "&&", "||",
+            "&", "|", "^", "<<", ">>", "~",
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                "::", ".",
+            "[", "]", ":", ",",
+            "\"",
+                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                "-",
+            " ", "\t", "\r", "\n", "\0"
+        ];
+
         while ($this->position < $this->expression_length)
         {
-            $nexttoken = $this->IsList(
-            [
-                "(", ")",
-                "+", "-", "*", "/", "%",
-                "<=", "<", ">=", ">", "==", "!=", "&&", "||",
-                "&", "|", "^", "<<", ">>", "~",
-                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-                    "::", ".",
-                "[", "]", ":", ",",
-                "\"",
-                    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-                    "-",
-                " ", "\t", "\r", "\n", "\0"
-            ]);
+            $nexttoken = $this->IsList($this->dictionary);
 
             if ($nexttoken === false) return;
 
