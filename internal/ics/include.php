@@ -1,6 +1,7 @@
 <?php
 namespace itais\ics;
 
+include "exception/include.php";
 include "config/include.php";
 include "database/include.php";
 include "cache/include.php";
