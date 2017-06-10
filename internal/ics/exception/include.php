@@ -1,5 +1,5 @@
 <?php
 namespace itais\ics\exception;
 
-include "class.php";
+include "exception.php";
 include "handler.php";
