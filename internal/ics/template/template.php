@@ -192,9 +192,6 @@ class TemplateCompiler
                 break;
 
 
-
-
-
             default:
                 $this->Parser->SignalError("Unknown command '{$tag->command}'");
 
