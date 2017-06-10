@@ -79,7 +79,7 @@ class Application
                 
                 include ics_internal . "/extensions/{$extension}/framework.php";
 
-                $extensions[] = (new ReflectionClass("\\" . $extension_config["identifiers"]["vendor"] . "\\" . $extension_config["identifiers"]["uname"]) . "\\Framework")->newInstanceArgs([]);
+                $extensions[$extension] = (new ReflectionClass("\\" . $extension_config["identifiers"]["vendor"] . "\\" . $extension_config["identifiers"]["uname"]) . "\\Framework")->newInstanceArgs([]);
             }
             catch (Exception $exception)
             {
@@ -105,6 +105,17 @@ class Application
     
     protected function Transfer()
     {
-        
+        if (is_callable($extensions[\itais\ics\url\URL::$extension]->Execute) == false) throw new \itais\ics\exception\ICSException("Extension {$extensions[\itais\ics\url\URL::$extension]} unexecutable", "native", "A3");
+        else
+        {
+            try
+            {
+                $extensions[\itais\ics\url\URL::$extension]->Execute();
+            }
+            catch (Exception $exception)
+            {
+                throw new \itais\ics\exception\ICSException("Failed to execute extension {$extension}: {$exception}", "native", "A4");
+            }
+        }
     }
 }
