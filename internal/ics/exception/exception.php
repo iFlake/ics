@@ -1,6 +1,7 @@
 <?php
+namespace itais\ics\exception;
 
-class ICSException extends Exception
+class ICSException extends \Exception
 {
     public $initiator;
     public $code;
