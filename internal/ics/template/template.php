@@ -1,5 +1,5 @@
 <?php
-namespace itais\ics\parser;
+namespace itais\ics\template;
 
 class TemplateCompiler
 {
@@ -36,7 +36,7 @@ class TemplateCompiler
 
     protected function Callback($tag)
     {
-        $signal = new Signal;
+        $signal = new \itais\ics\parser\Signal;
 
         switch ($tag->command)
         {
