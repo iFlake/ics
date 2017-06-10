@@ -10,14 +10,50 @@ class Application
     {
         \itais\ics\applcation\Defaults::Load();
 
+        $this->RegisterAutoloader();
+
         $this->RetrieveExtensions();
         $this->LoadExtensions();
         $this->InitializeExtensions();
 
-        $this->RegisterAutoloader();
 
         $this->Transfer();
     }
+
+
+    protected function RegisterAutoloader()
+    {
+        spl_autoload_register(function ($class)
+        {
+            $namespaces = explode("\\", $class);
+
+            if (count($namespaces) < 4) return;
+
+            $product      = $namespaces[2];
+            
+            $file_path    = ics_internal . "/extensions/{$product}/framework/" . implode("/", array_splice($namespaces, 3)) . ".php";
+
+            if (\itais\ics\config\Cache::autoloader == true)
+            {
+                $cache        = new \itais\ics\cache\Cache("file_exists");
+                $exists       = $cache->{$file_path};
+
+                if ($exists != null && $exists == true) return include_once $file_path;
+            }
+
+            if (file_exists($file_path) == true)
+            {
+                if (\itais\ics\config\Cache::autoloader == true)
+                {
+                    $cache                  = new \itais\ics\cache\Cache("file_exists");
+                    $cache->{$file_path}    = $true;
+                }
+
+                include_once $file_path;
+            }
+        });
+    }
+
 
     protected function RetrieveExtensions()
     {
@@ -66,40 +102,6 @@ class Application
                 throw new \itais\ics\exception\ICSException("Failed to initialize extension {$extension}: {$exception}", "native", "A2");
             }
         }
-    }
-
-
-    protected function RegisterAutoloader()
-    {
-        spl_autoload_register(function ($class)
-        {
-            $namespaces = explode("\\", $class);
-
-            if (count($namespaces) < 4) return;
-
-            $product      = $namespaces[2];
-            
-            $file_path    = ics_internal . "/extensions/{$product}/framework/" . implode("/", array_splice($namespaces, 3)) . ".php";
-
-            if (\itais\ics\config\Cache::autoloader == true)
-            {
-                $cache        = new \itais\ics\cache\Cache("file_exists");
-                $exists       = $cache->{$file_path};
-
-                if ($exists != null && $exists == true) return include_once $file_path;
-            }
-
-            if (file_exists($file_path) == true)
-            {
-                if (\itais\ics\config\Cache::autoloader == true)
-                {
-                    $cache                  = new \itais\ics\cache\Cache("file_exists");
-                    $cache->{$file_path}    = $true;
-                }
-
-                include_once $file_path;
-            }
-        });
     }
     
     protected function Transfer()
