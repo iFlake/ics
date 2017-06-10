@@ -8,14 +8,13 @@ class Application
 
     public function Execute()
     {
-        \itais\ics\applcation\Defaults::Load();
-
         $this->RegisterAutoloader();
 
         $this->RetrieveExtensions();
         $this->LoadExtensions();
         $this->InitializeExtensions();
 
+        \itais\ics\applcation\Defaults::Load();
 
         $this->Transfer();
     }
