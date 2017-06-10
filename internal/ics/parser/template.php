@@ -1,7 +1,7 @@
 <?php
 namespace itais\ics\parser;
 
-class Template
+class TemplateCompiler
 {
     public $path;
 
@@ -139,6 +139,59 @@ class Template
                 $signal->output               = "<?php break; ?>";
 
                 break;
+
+            case "while":
+                $signal->inline               = false;
+
+                $translator                   = new ExpressionTranslator;
+
+                $translator->expression       = $tag->parameters;
+                $translator->error_handler    = $this->parser->SignalError;
+
+                $translator->Translate();
+
+                $signal->output               = "while ({$translator->output}) { ?> {$tag->content} <?php }";
+
+                break;
+
+            case "foreach":
+                $signal->inline                         = false;
+
+                $in_sections                            = explode(" in ", $tag->parameters, 2);
+                $iv_sections                            = explode("->", $in_sections[0], 2);
+
+
+
+                $index_translator                       = new ExpressionTranslator;
+
+                $index_translator->expression           = $iv_sections[0];
+                $index_translator->error_handler        = $this->parser->SignalError;
+
+                $index_translator->Translate();
+
+
+                $value_translator                       = new ExpressionTranslator;
+
+                $value_translator->expression           = $iv_sections[1];
+                $value_translator->error_handler        = $this->parser->SignalError;
+
+                $value_translator->Translate();
+
+                
+                $reference_translator                   = new ExpressionTranslator;
+
+                $reference_translator->expression       = $in_sections[1];
+                $reference_translator->error_handler    = $this->parser->SignalError;
+
+                $reference_translator->Translate();
+
+
+
+                $signal->output                     = "foreach ({$reference_translator->output} as {$index_translator->output} => {$value_translator->output}) { ?> {$tag->content} <?php }";
+
+                break;
+
+
 
 
 
