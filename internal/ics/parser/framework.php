@@ -334,17 +334,6 @@ class Parser
         $location = $this->Location($position);
         throw new \Exception("{$error} at line {$location->line} and character {$location->character} (index {$location->index})");
     }
-
-    protected function Next()
-    {
-        $info = array_pop($this->stack);
-        Parse();
-    }
-    
-    protected function NextInline()
-    {
-        Parse();
-    }
 }
 
 class Signal
