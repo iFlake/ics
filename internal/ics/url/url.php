@@ -12,15 +12,15 @@ class URL
 
     public function Parse()
     {
-        self::$sections     = explode(self::$raw_url, ltrim(self::$raw_url, "/"));
-        $match              = explode("/", str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]));
+        self::$sections     = explode("/", ltrim(self::$raw_url, "/"));
+        $match              = explode("/", \itais\ics\config\Paths::installation_relative);
 
         self::$sections     = array_slice(self::$sections, count($match));
 
         if (count(self::$sections) < 1) return self::ContinueParse(true);
         else
         {
-            if (array_key_exists(self::$sections[0], \itais\ics\ExecutionContext::$Application->extensions_raw) == true) return self::ContinueParse(false);
+            if (array_key_exists(self::$sections[0], \itais\ics\ExecutionContext::$application->extensions_raw) == true) return self::ContinueParse(false);
             else return self::ContinueParse(true);
         }
     }
