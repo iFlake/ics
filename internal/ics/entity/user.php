@@ -120,8 +120,7 @@ class User
         if (!is_int($id)) throw new \Exception("Expected integer for \$id, got " . gettype($id));
         if (!is_bool($require_explicit)) throw new \Exception("Expected boolean for \$require_explicit, got " . gettype($require_explicit));
         
-        $permission = $this->GetRawPemission($name, $id);
-        switch ($permission)
+        switch ($this->GetRawPemission($name, $id))
         {
             case \itais\ics\permission\Permission::allow:
             case \itais\ics\permission\Permission::allow_override:
@@ -187,7 +186,7 @@ class User
     public function DisposeSession($session)
     {
         global $itais_ics_database_connection;
-        
+
         $table_sessions = new \itais\ics\database\Table("sessions");
         $table_sessions->Delete("session = '" . $itais_ics_database_connection->escape_string($session) . "'");
     }
