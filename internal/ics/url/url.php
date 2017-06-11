@@ -20,7 +20,7 @@ class URL
         if (count(self::$sections) < 1) return self::ContinueParse(true);
         else
         {
-            if (array_key_exists(self::$sections[0], \itais\ics\ExecutionContext::$application->extensions_raw) == true) return self::ContinueParse(false);
+            if (array_search(strtolower(self::$sections[0]), array_map("strtolower", \itais\ics\ExecutionContext::$application->extensions_raw)) !== false) return self::ContinueParse(false);
             else return self::ContinueParse(true);
         }
     }
@@ -34,7 +34,7 @@ class URL
         }
         else
         {
-            self::$extension     = self::$sections[0];
+            self::$extension     = strtolower(self::$sections[0]);
             self::$parameters    = array_slice(self::$sections, 1);
         }
     }

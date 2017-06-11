@@ -22,7 +22,7 @@ class Application
 
     public function GetDefaultExtension()
     {
-        return "Hi";
+        return "hi";
     }
 
 
