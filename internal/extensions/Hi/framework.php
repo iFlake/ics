@@ -11,5 +11,7 @@ class Framework
     function Execute()
     {
         echo "Executed";
+        echo "<br />";
+        echo print_r(\itais\ics\url\URL::$parameters);
     }
 }
