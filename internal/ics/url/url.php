@@ -12,8 +12,8 @@ class URL
 
     public function Parse()
     {
-        self::$sections     = explode("/", ltrim(self::$raw_url, "/"));
-        $match              = explode("/", \itais\ics\config\Paths::installation_relative);
+        self::$sections     = array_filter(explode("/", self::$raw_url));
+        $match              = array_filter(explode("/", \itais\ics\config\Paths::installation_relative));
 
         self::$sections     = array_slice(self::$sections, count($match));
 
