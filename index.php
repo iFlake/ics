@@ -12,4 +12,4 @@ class ExecutionContext
 }
 
 ExecutionContext::$application = new \itais\ics\application\Application;
-ExecutionContext::$application.Execute();
+ExecutionContext::$application->Execute();

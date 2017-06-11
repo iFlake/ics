@@ -3,9 +3,9 @@ namespace itais\ics\config;
 
 class MySQLi
 {
-    public const host        = "";
-    public const username    = "";
-    public const password    = "";
-    public const database    = "";
-    public const port        = 0;
+    public const host        = "localhost";
+    public const username    = "flake";
+    public const password    = "es!vTU(!)^3264[^]";
+    public const database    = "ics";
+    public const port        = 3306;
 }

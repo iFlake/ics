@@ -3,8 +3,8 @@ namespace itais\ics\application;
 
 class Application
 {
-    public $extensions_raw;
-    public $extensions;
+    public $extensions_raw    = [];
+    public $extensions        = [];
 
     public function Execute()
     {
@@ -14,9 +14,15 @@ class Application
         $this->LoadExtensions();
         $this->InitializeExtensions();
 
-        \itais\ics\applcation\Defaults::Load();
+        Defaults::Load();
 
         $this->Transfer();
+    }
+
+
+    public function GetDefaultExtension()
+    {
+        return "Hi";
     }
 
 
@@ -79,7 +85,7 @@ class Application
                 
                 include ics_internal . "/extensions/{$extension}/framework.php";
 
-                $extensions[$extension] = (new ReflectionClass("\\" . $extension_config["identifiers"]["vendor"] . "\\" . $extension_config["identifiers"]["uname"]) . "\\Framework")->newInstanceArgs([]);
+                $this->extensions[$extension] = (new \ReflectionClass("\\" . $extension_config["identifiers"]["vendor"] . "\\" . $extension_config["identifiers"]["uname"] . "\\Framework"))->newInstanceArgs([]);
             }
             catch (Exception $exception)
             {
@@ -94,7 +100,7 @@ class Application
         {
             try
             {
-                if (is_callable($extension->Initialize)) $extension->Initialize();
+                $extension->Initialize();
             }
             catch (Exception $exception)
             {
@@ -105,17 +111,13 @@ class Application
     
     protected function Transfer()
     {
-        if (is_callable($extensions[\itais\ics\url\URL::$extension]->Execute) == false) throw new \itais\ics\exception\ICSException("Extension {$extensions[\itais\ics\url\URL::$extension]} unexecutable", "native", "A3");
-        else
+        try
         {
-            try
-            {
-                $extensions[\itais\ics\url\URL::$extension]->Execute();
-            }
-            catch (Exception $exception)
-            {
-                throw new \itais\ics\exception\ICSException("Failed to execute extension {$extension}: {$exception}", "native", "A4");
-            }
+            $this->extensions[\itais\ics\url\URL::$extension]->Execute();
+        }
+        catch (Exception $exception)
+        {
+            throw new \itais\ics\exception\ICSException("Failed to execute extension " . \itais\ics\url\URL::$extension . ": {$exception}", "native", "A4");
         }
     }
 }

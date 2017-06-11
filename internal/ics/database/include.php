@@ -2,5 +2,5 @@
 namespace itais\ics\database;
 
 include "connect.php";
-include "table.php";
+include "ctable.php";
 include "where.php";

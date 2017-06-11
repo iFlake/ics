@@ -3,7 +3,7 @@ namespace itais\ics\config;
 
 class Cache
 {
-    public static $prefix        = "ics_";
+    public const prefix        = "ics_";
 
-    public static $autoloader    = true;
+    public const autoloader    = false;
 }

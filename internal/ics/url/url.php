@@ -12,7 +12,7 @@ class URL
 
     public function Parse()
     {
-        self::$sections     = explode($raw_url, ltrim(self::$raw_url, "/"));
+        self::$sections     = explode(self::$raw_url, ltrim(self::$raw_url, "/"));
         $match              = explode("/", str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]));
 
         self::$sections     = array_slice(self::$sections, count($match));
@@ -29,7 +29,7 @@ class URL
     {
         if ($default_extension == true)
         {
-            self::$extension     = \itais\ics\ExecutionContext::$Application->GetDefaultExtension();
+            self::$extension     = \itais\ics\ExecutionContext::$application->GetDefaultExtension();
             self::$parameters    = self::$sections;
         }
         else

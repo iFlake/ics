@@ -6,4 +6,4 @@ function Handler($exception)
     
 }
 
-set_exception_handler("\\itais\\ics\\exception\\Handler");
+//set_exception_handler("\\itais\\ics\\exception\\Handler");

@@ -1,5 +1,5 @@
 <?php
-namespace \itais\ics\cache;
+namespace itais\ics\cache;
 
 class Cache
 {

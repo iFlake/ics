@@ -1,5 +1,5 @@
 <?php
-namespace \itais\ics\database; 
+namespace itais\ics\database; 
 
 class Where
 {
